@@ -9,7 +9,7 @@ const { PORT = 3001, DB_URI } = process.env;
     await connectDb(DB_URI);
     console.log(`Database connection was successfully established`);
     app.listen(PORT, () => {
-      console.log(`Server is up and running on port 3001`);
+      console.log(`Server is up and running on port ${PORT}`);
     });
   } catch (error) {
     console.log(error.message);
