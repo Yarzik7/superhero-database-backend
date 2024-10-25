@@ -8,6 +8,7 @@ const {
 const controllerWrapper = require('../utils/controllerWrapper');
 
 const getAllSuperheroesController = controllerWrapper(async (_, res) => {
+  console.log('getAllSuperheroesController');
   res.json(await getAllSuperheroesService());
 });
 
