@@ -1,6 +1,10 @@
 const { Router } = require('express');
 const validateBody = require('../utils/validateBody.js');
-const { createSuperheroValidationSchema } = require('../utils/validation/superheroValidationSchemas');
+const validateObjectIdHandler = require('../middlewares/validateObjectIdHandler.js');
+const {
+  createSuperheroValidationSchema,
+  updateSuperheroValidationSchema,
+} = require('../utils/validation/superheroValidationSchemas');
 const {
   getAllSuperheroesController,
   getSuperheroByIdController,
@@ -17,9 +21,9 @@ router
   .post(validateBody(createSuperheroValidationSchema), createSuperheroController);
 router
   .route('/:superheroId')
-  .get(getSuperheroByIdController)
-  .put(updateSuperheroByIdController)
-  .patch(updateSuperheroByIdController)
-  .delete(deleteSuperheroByIdController);
+  .get(validateObjectIdHandler, getSuperheroByIdController)
+  .put(validateObjectIdHandler, updateSuperheroByIdController)
+  .patch(validateObjectIdHandler, validateBody(updateSuperheroValidationSchema), updateSuperheroByIdController)
+  .delete(validateObjectIdHandler, deleteSuperheroByIdController);
 
 module.exports = { superheroesRouter: router };

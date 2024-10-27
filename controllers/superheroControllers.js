@@ -7,9 +7,8 @@ const {
 } = require('../services/superheroServices');
 const controllerWrapper = require('../utils/controllerWrapper');
 
-const getAllSuperheroesController = controllerWrapper(async (_, res) => {
-  console.log('getAllSuperheroesController');
-  res.json(await getAllSuperheroesService());
+const getAllSuperheroesController = controllerWrapper(async (req, res) => {
+  res.json(await getAllSuperheroesService(req));
 });
 
 const getSuperheroByIdController = controllerWrapper(async (req, res) => {

@@ -1,17 +1,14 @@
 const HttpError = require('../utils/HttpError');
 const Superhero = require('../models/superheroModel');
-const mongoose = require('mongoose');
 
-const getAllSuperheroesService = async () => {
-  const res = await Superhero.find();
+const getAllSuperheroesService = async req => {
+  const { page, limit } = req.query;
+  const skip = (page - 1) * limit;
+  const res = await Superhero.find().skip(skip).limit(limit);
   return res;
 };
 
 const getSuperheroByIdService = async superheroId => {
-  if (!mongoose.Types.ObjectId.isValid(superheroId)) {
-    throw new HttpError(400, 'Invalid superhero ID');
-  }
-
   const superhero = await Superhero.findById(superheroId);
 
   if (!superhero) {
@@ -29,10 +26,6 @@ const createSuperheroesService = async body => {
 };
 
 const updateSuperheroByIdService = async (superheroId, body) => {
-  if (!mongoose.Types.ObjectId.isValid(superheroId)) {
-    throw new HttpError(400, 'Invalid superhero ID');
-  }
-
   const updatedSuperhero = await Superhero.findByIdAndUpdate(superheroId, body, { new: true });
 
   if (!updatedSuperhero) {
@@ -43,10 +36,6 @@ const updateSuperheroByIdService = async (superheroId, body) => {
 };
 
 const deleteSuperheroByIdService = async superheroId => {
-  if (!mongoose.Types.ObjectId.isValid(superheroId)) {
-    throw new HttpError(400, 'Invalid superhero ID');
-  }
-
   const deletedSuperhero = await Superhero.findByIdAndDelete(superheroId);
 
   if (!deletedSuperhero) {
