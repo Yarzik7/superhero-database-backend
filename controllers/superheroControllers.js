@@ -17,6 +17,8 @@ const getSuperheroByIdController = controllerWrapper(async (req, res) => {
 });
 
 const createSuperheroController = controllerWrapper(async (req, res) => {
+  // console.log('ReqBody: ', req.body);
+  // res.status(201).json({ test: 'Ok', _id: '1' });
   res.status(201).json(await createSuperheroesService(req.body));
 });
 
