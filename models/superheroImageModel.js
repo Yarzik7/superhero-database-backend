@@ -12,7 +12,7 @@ const superheroImageSchema = new Schema(
       required: true,
     },
     superheroId: {
-      type: String, //Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Superhero',
       required: true,
     },
@@ -22,6 +22,6 @@ const superheroImageSchema = new Schema(
 
 superheroImageSchema.post('save', mongooseErrorHandler);
 
-const SuperheroImage = model('superheroImages', superheroImageSchema);
+const SuperheroImage = model('superheroimages', superheroImageSchema);
 
 module.exports = SuperheroImage;

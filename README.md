@@ -29,6 +29,12 @@
 
    PORT=your_port (3001 for default)
 
+   Variables for Cloudinary:
+   
+   CLOUDINARY_NAME=
+   CLOUDINARY_KEY=
+   CLOUDINARY_SECRET=
+
 4. **Running the project:**
 
    ```bash

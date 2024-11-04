@@ -1,21 +1,46 @@
+const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;
 const HttpError = require('../utils/HttpError');
 const Superhero = require('../models/superheroModel');
+const SuperheroImage = require('../models/superheroImageModel');
 
 const getAllSuperheroesService = async req => {
-  const { page, limit } = req.query;
+  const { page, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
-  const res = await Superhero.find().skip(skip).limit(limit);
-  return res;
+
+  return await Superhero.aggregate([
+    { $sort: { _id: -1 } },
+    { $skip: skip },
+    { $limit: parseInt(limit) },
+    {
+      $lookup: {
+        from: 'superheroimages',
+        localField: '_id',
+        foreignField: 'superheroId',
+        as: 'images',
+      },
+    },
+  ]);
 };
 
 const getSuperheroByIdService = async superheroId => {
-  const superhero = await Superhero.findById(superheroId);
+  const superhero = await Superhero.aggregate([
+    { $match: { _id: new mongoose.Types.ObjectId(superheroId) } },
+    {
+      $lookup: {
+        from: 'superheroimages',
+        localField: '_id',
+        foreignField: 'superheroId',
+        as: 'images',
+      },
+    },
+  ]);
 
-  if (!superhero) {
+  if (!superhero.length) {
     throw new HttpError(404, 'This superhero does not exist');
   }
 
-  return superhero;
+  return superhero[0];
 };
 
 const createSuperheroesService = async body => {
@@ -41,6 +66,14 @@ const deleteSuperheroByIdService = async superheroId => {
   if (!deletedSuperhero) {
     throw new HttpError(404, 'This superhero does not exist');
   }
+
+  const images = await SuperheroImage.find({ superheroId });
+
+  for (const image of images) {
+    await cloudinary.uploader.destroy(image.publicId);
+  }
+
+  await SuperheroImage.deleteMany({ superheroId });
 
   return deletedSuperhero;
 };
